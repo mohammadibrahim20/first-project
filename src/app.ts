@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import cors from 'cors';
 import express, { Application, Request, Response } from 'express';
-import globalErrorHandler from './app/middlware/globalErrorHandler';
-import notFound from './app/middlware/notFout';
+import globalErrorHandler from './app/middleware/globalErrorHandler';
+import notFound from './app/middleware/notFout';
 import router from './app/routes';
 const app: Application = express();
 
