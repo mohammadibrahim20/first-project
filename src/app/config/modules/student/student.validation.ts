@@ -43,7 +43,6 @@ const GenderEnum = z.enum(['female', 'male', 'other']);
 
 const StudentValidatorSchema = z.object({
   id: z.string(),
-  password: z.string().max(20),
   name: UserNameSchema,
   gender: GenderEnum,
   dateOfBirth: z.string(), // Ensure dateOfBirth is always a string and not optional

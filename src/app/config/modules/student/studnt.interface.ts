@@ -1,3 +1,5 @@
+import { Model, Types } from 'mongoose';
+
 export type TUserName = {
   firstName: string;
   middleName?: string | undefined;
@@ -21,7 +23,7 @@ export type TLocalGuardian = {
 
 export type TStudent = {
   id: string;
-  password: string;
+  user: Types.ObjectId;
   name: TUserName;
   gender: 'male' | 'female' | 'other';
   dateOfBirth: string;
@@ -34,7 +36,6 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
-  isActive: 'active' | 'blocked';
   isDeleted: boolean;
 };
 //for creating static
