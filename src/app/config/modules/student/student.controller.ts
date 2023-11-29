@@ -6,15 +6,11 @@ import { StudentServices } from './student.service';
 
 const getAllStudents = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDB();
-  res.status(200).json({
-    success: true,
-    message: 'Student are retrieved successfully',
-    data: result,
-  });
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Student isi retrieved successfully',
+    message: 'Student are retrieved successfully',
     data: result,
   });
 });
