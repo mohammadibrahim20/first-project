@@ -43,11 +43,11 @@ const GenderEnum = z.enum(['female', 'male', 'other']);
 
 export const createStudentValidationSchema = z.object({
   body: z.object({
-    password: z.string().max(20),
+    password: z.string(),
     student: z.object({
       name: UserNameValidationSchema,
       gender: GenderEnum,
-      dateOfBirth: z.date().optional(), // Ensure dateOfBirth is always a string and not optional
+      dateOfBirth: z.string().optional(), // Ensure dateOfBirth is always a string and not optional
       email: z.string().email({ message: 'Invalid email address' }),
       contactNo: z.string().min(1, { message: 'Contact number is required' }),
       emergencyContactNo: z
@@ -65,6 +65,7 @@ export const createStudentValidationSchema = z.object({
       guardian: GuardianValidationSchema,
       localGuardian: LocalGuardianValidationSchema,
       profileImg: z.string().optional(),
+      admissionSemester: z.string(),
     }),
   }),
 });
