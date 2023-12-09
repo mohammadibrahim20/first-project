@@ -5,12 +5,51 @@ import { User } from '../user/user.model';
 import { Student } from './student.model';
 import { TStudent } from './studnt.interface';
 
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find().populate('admissionSemester').populate({
-    path: 'academicDepartment',
-    populate: 'academicFaculty',
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  const queryObj = { ...query };
+  let searchTerm = '';
+  if (query?.searchTerm) {
+    searchTerm = query?.searchTerm as string;
+  }
+  const studentSearchableFiled = ['email', 'name.firstName', 'presentAddress'];
+  const searchQuery = Student.find({
+    $or: studentSearchableFiled.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
   });
-  return result;
+  const excludeFiled = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+  excludeFiled.forEach((el) => delete queryObj[el]);
+
+  const filterQuery = searchQuery
+    .find(queryObj)
+    .populate('admissionSemester')
+    .populate({
+      path: 'academicDepartment',
+      populate: 'academicFaculty',
+    });
+  let sort = '-createdAt';
+  if (query.sort) {
+    sort = query.sort as string;
+  }
+  const sortQuery = filterQuery.sort(sort);
+  let page = 1;
+  let limit = 1;
+  let skip = 0;
+  if (query?.limit) {
+    limit = parseInt(query.limit as string);
+  }
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
+  const paginateQuery = sortQuery.skip(skip);
+  const limitQuery = paginateQuery.limit(limit);
+  let fields = '-__v';
+  if (query.fields) {
+    fields = (query.fields as string).split(',').join(' ');
+  }
+  const fieldQuery = await limitQuery.select(fields);
+  return fieldQuery;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
@@ -22,9 +61,10 @@ const getSingleStudentFromDB = async (id: string) => {
     });
   return result;
 };
+
 const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
   const { name, guardian, localGuardian, ...restStudentData } = payload;
-  const modifiedUpdatedData: Recort<string, unknown> = {
+  const modifiedUpdatedData: Record<string, unknown> = {
     ...restStudentData,
   };
   if (name && Object.keys(name).length) {

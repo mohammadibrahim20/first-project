@@ -24,10 +24,16 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   try {
     session.startTransaction();
     //   set  generated id
+
+    if (!admissionSemester) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Admission semester not found',
+      );
+    }
     userData.id = await generatedStudentId(admissionSemester);
     //   create a user
     const newUser = await User.create([userData], { session });
-
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
     }
@@ -43,7 +49,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create Student');
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Failed to create user or Student',
+    );
   }
 };
 
