@@ -1,7 +1,9 @@
 import { Router } from 'express';
+import { CourseRoutes } from '../config/modules/Course/course.route';
 import { AcademicDepartmentRoutes } from '../config/modules/academicDepartment/academicDepartment.route';
 import { AcademicFacultyRoutes } from '../config/modules/academicFaculty/academicFaculty.route';
 import { AcademicSemesterRoutes } from '../config/modules/academicSemester/academicSemester.route';
+import { AdminRoutes } from '../config/modules/admin/admin.route';
 import { FacultyRoutes } from '../config/modules/faculty/faculty.route';
 import { StudentRoutes } from '../config/modules/student/student.route';
 import { UserRoutes } from '../config/modules/user/user.route';
@@ -20,6 +22,14 @@ const moduleRoutes = [
   {
     path: '/faculties',
     route: FacultyRoutes,
+  },
+  {
+    path: '/courses',
+    route: CourseRoutes,
+  },
+  {
+    path: '/admins',
+    route: AdminRoutes,
   },
   {
     path: '/academic-semesters',

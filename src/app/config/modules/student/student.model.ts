@@ -14,7 +14,7 @@ const userNameSchema = new Schema<TUserName>({
     type: String,
     trim: true,
     required: [true, 'First Name must be required'],
-    maxlength: [20, 'First Name can not be more than 20 characters'],
+    max_length: [20, 'First Name can not be more than 20 characters'],
     validate: {
       validator: function (value: string) {
         const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
