@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 
 import { SemesterRegistrationStatus } from './semesterRegistration.constant';
 import { TSemesterRegistration } from './semesterRegistration.interface';
@@ -16,7 +16,7 @@ const semesterRegistrationSchema = new mongoose.Schema<TSemesterRegistration>(
       enum: SemesterRegistrationStatus,
       default: 'UPCOMING',
     },
-    starDate: {
+    startDate: {
       type: Date,
       required: true,
     },
@@ -36,4 +36,9 @@ const semesterRegistrationSchema = new mongoose.Schema<TSemesterRegistration>(
   {
     timestamps: true,
   },
+);
+
+export const SemesterRegistration = model(
+  'SemesterRegistration',
+  semesterRegistrationSchema,
 );
