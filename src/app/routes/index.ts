@@ -15,6 +15,10 @@ const router = Router();
 
 const moduleRoutes = [
   {
+    path: '/auth',
+    route: AuthRoutes,
+  },
+  {
     path: '/users',
     route: UserRoutes,
   },
@@ -53,10 +57,6 @@ const moduleRoutes = [
   {
     path: '/offered-courses',
     route: offeredCourseRoutes,
-  },
-  {
-    path: '/auth',
-    route: AuthRoutes,
   },
 ];
 

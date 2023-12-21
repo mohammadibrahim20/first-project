@@ -1,5 +1,6 @@
+import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../..';
 import AppError from '../../../errors/appError';
 import { User } from '../user/user.model';
@@ -23,15 +24,61 @@ const loginUser = async (payload: TLoginUser) => {
   if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
     throw new AppError(httpStatus.FORBIDDEN, 'Password is incorrect');
   }
-  const jwtPayload = { userId: user.id, role: user.role };
+
+  const jwtPayload = { userId: user.id as string, role: user.role };
+  if (!jwtPayload) {
+    throw new AppError(httpStatus.FORBIDDEN, 'not');
+  }
   const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
-    expiresIn: '10d',
+    expiresIn: '1d',
   });
+
   return {
     accessToken,
     needsPasswordChange: user?.needsPasswordChange,
   };
 };
+const changePassword = async (
+  userData: JwtPayload,
+  payload: { oldPassword: string; newPassword: string },
+) => {
+  const user = await User.isUserExistsByCustomId(userData.userId);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found');
+  }
+
+  if (user.isDeleted === true) {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is deleted !');
+  }
+  if (user.status === 'blocked') {
+    throw new AppError(httpStatus.FORBIDDEN, 'This user is Blocked !');
+  }
+
+  //   check if the password is correct
+
+  if (!(await User.isPasswordMatched(payload?.oldPassword, user?.password))) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Password is incorrect');
+  }
+
+  const newHashedPassword = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  await User.findOneAndUpdate(
+    {
+      id: userData.userId,
+      role: userData.role,
+    },
+    {
+      password: newHashedPassword,
+      needPasswordChange: false,
+      passwordChangeAt: new Date(),
+    },
+  );
+  return null;
+};
 export const AuthServices = {
   loginUser,
+  changePassword,
 };
