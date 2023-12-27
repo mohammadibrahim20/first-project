@@ -29,9 +29,11 @@ const loginUser = async (payload: TLoginUser) => {
   if (!jwtPayload) {
     throw new AppError(httpStatus.FORBIDDEN, 'not');
   }
+  console.log(jwtPayload);
   const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, {
     expiresIn: '1d',
   });
+  console.log(accessToken);
 
   return {
     accessToken,
