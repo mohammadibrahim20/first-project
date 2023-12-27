@@ -60,6 +60,7 @@ export const findLastFacultyId = async () => {
 export const generateFacultyId = async () => {
   let currentId = (0).toString();
   const lastFacultyId = await findLastFacultyId();
+  console.log(lastFacultyId);
 
   if (lastFacultyId) {
     currentId = lastFacultyId.substring(2);
@@ -67,7 +68,7 @@ export const generateFacultyId = async () => {
 
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
 
-  incrementId = `F${incrementId}`;
+  incrementId = `f-${incrementId}`;
 
   return incrementId;
 };
@@ -100,6 +101,6 @@ export const generateAdminId = async () => {
 
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
 
-  incrementId = `A${incrementId}`;
+  incrementId = `a-${incrementId}`;
   return incrementId;
 };
