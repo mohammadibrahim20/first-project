@@ -1,4 +1,5 @@
 import express from 'express';
+import auth from '../../../middleware/auth';
 import validateRequest from '../../../middleware/validateRequest';
 import { StudentControllers } from './student.controller';
 import { updateStudentValidationSchema } from './student.validation';
@@ -6,7 +7,7 @@ const router = express.Router();
 
 // will call controller function
 
-router.get('/', StudentControllers.getAllStudents);
+router.get('/', auth('student'), StudentControllers.getAllStudents);
 
 router.get('/:id', StudentControllers.getSingleStudent);
 router.delete('/:id', StudentControllers.deleteStudent);

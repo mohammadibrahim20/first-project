@@ -7,6 +7,7 @@ export type TUserRole = keyof typeof USER_ROLE;
 export interface TUser {
   id: string;
   password: string;
+  email: string;
   needsPasswordChange: boolean;
   passwordChangeAt?: Date;
   role: 'admin' | 'faculty' | 'student';

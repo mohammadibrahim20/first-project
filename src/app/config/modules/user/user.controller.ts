@@ -1,20 +1,34 @@
 import httpStatus from 'http-status';
+import { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../../../utils/catchAsync';
 import sendResponse from '../../../utils/sendResponse';
 import { UserService } from './user.service';
 
+const getMe = catchAsync(async (req, res) => {
+  const { userId, role } = req.user as JwtPayload;
+  const result = await UserService.getMe(userId, role);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Profile Data retried successfully',
+    data: result,
+  });
+});
 const createStudent = catchAsync(async (req, res) => {
-  const { password, student: studentData } = req.body;
-  const result = await UserService.createStudentIntoDB(
-    password as string,
-    studentData,
-  );
+  // const { password, student: studentData } = req.body;
+  // console.log(req.file);
+  console.log(req.body);
+  // const result = await UserService.createStudentIntoDB(
+  //   password as string,
+  //   studentData,
+  // );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Student created successfully',
-    data: result,
+    data: null,
   });
 });
 
@@ -43,9 +57,22 @@ const createAdmin = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const changStatus = catchAsync(async (req, res) => {
+  const id = req.params.id as string;
+  const result = await UserService.changeStatus(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Status Updated successfully',
+    data: result,
+  });
+});
 
 export const UserControllers = {
   createStudent,
   createFaculty,
   createAdmin,
+  getMe,
+  changStatus,
 };

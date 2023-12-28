@@ -43,7 +43,7 @@ const GenderEnum = z.enum(['female', 'male', 'other']);
 
 export const createStudentValidationSchema = z.object({
   body: z.object({
-    password: z.string(),
+    password: z.string().optional(),
     student: z.object({
       name: CreateUserNameValidationSchema,
       gender: GenderEnum,
