@@ -18,7 +18,11 @@ import {
   generatedStudentId,
 } from './user.utils';
 
-const createStudentIntoDB = async (password: string, payload: TStudent) => {
+const createStudentIntoDB = async (
+  file: any,
+  password: string,
+  payload: TStudent,
+) => {
   const userData: Partial<TUser> = {};
   // if password is not provided, use default password
   userData.password = password || (config.defaultPass as string);
@@ -43,6 +47,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     }
     userData.id = await generatedStudentId(admissionSemester);
     //   create a user
+    const imageName = `${userData.id}${payload?.name?.firstName}`;
+    const path = file?.path;
+    // const profileImg = await sentImageToCloudinary(imageName, path);
+
     const newUser = await User.create([userData], { session });
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');

@@ -1,19 +1,32 @@
 import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
 import multer from 'multer';
-export const sentImageToCloudinary = () => {
-  cloudinary.config({
-    cloud_name: 'dyv26wz9o',
-    api_key: '566492638533417',
-    api_secret: 'gfg',
-  });
+cloudinary.config({
+  cloud_name: 'dyv26wz9o',
+  api_key: '566492638533417',
+  api_secret: 'gfg',
+});
 
-  cloudinary.uploader.upload(
-    '/home/my_image.jpg',
-    { upload_preset: 'my_preset' },
-    (error, result) => {
-      console.log(result, error);
-    },
-  );
+export const sentImageToCloudinary = (imageName: string, path: string) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(
+      path,
+      { upload_preset: imageName },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(result);
+        fs.unlink(path, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('File deleted successfully');
+          }
+        });
+      },
+    );
+  });
 };
 
 const storage = multer.diskStorage({

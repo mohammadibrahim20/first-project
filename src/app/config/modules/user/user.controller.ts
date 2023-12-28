@@ -16,19 +16,20 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 const createStudent = catchAsync(async (req, res) => {
-  // const { password, student: studentData } = req.body;
+  const { password, student: studentData } = req.body;
   // console.log(req.file);
-  console.log(req.body);
-  // const result = await UserService.createStudentIntoDB(
-  //   password as string,
-  //   studentData,
-  // );
+  const file = req.file;
+  const result = await UserService.createStudentIntoDB(
+    file,
+    password as string,
+    studentData,
+  );
 
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Student created successfully',
-    data: null,
+    data: result,
   });
 });
 
